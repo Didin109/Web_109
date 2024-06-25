@@ -97,27 +97,52 @@
     <script>
         const chatBox = document.getElementById('chat-box');
 
+        // Load messages from localStorage
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(message => {
+                addMessageToChatBox(message);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Save messages to localStorage
+        function saveMessage(message) {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        // Add message to chat box
+        function addMessageToChatBox(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message');
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+        }
+
+        // Send message
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             if (message) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('chat-message');
-                messageElement.textContent = message;
-                chatBox.appendChild(messageElement);
+                addMessageToChatBox(message);
+                saveMessage(message);
                 input.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
 
+        // Load messages when the page loads
+        window.onload = loadMessages;
+
         // Simulate incoming messages
         setInterval(() => {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('chat-message');
-            messageElement.textContent = 'This is a public chat message.';
-            chatBox.appendChild(messageElement);
+            const simulatedMessage = 'This is a public chat message.';
+            addMessageToChatBox(simulatedMessage);
+            saveMessage(simulatedMessage);
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, 5000);
+        }, 10000); // Adjust the interval as needed
     </script>
 </body>
 </html>
